@@ -6,8 +6,9 @@ data = [
     "E**(x1*x2)+x1**2+x2-1.20+cos(x1)",
     "x1**2+x2**2+x1-0.55"
 ]
+vector = [0.6, 0.5]
+variables_str = "x1, x2"
+variables = symbols(list(map(str, variables_str.split(", "))))
 
-symbols = symbols(['x1', 'x2'])
-
-test = Newton(data)
-result = test.get_jacobi_matrix(symbols)
+newton = Newton(equations=data, vector=vector, variables=variables, eps=0.0000001)
+newton.calculate()
