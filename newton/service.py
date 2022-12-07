@@ -64,7 +64,7 @@ class Newton:
 
         return result if minus_count % 2 == 0 else -result
 
-    def calculate(self) -> Matrix:
+    def calculate(self) -> dict:
         jacobi = self._get_jacobi_matrix()
         result = {}
 
