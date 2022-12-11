@@ -2,7 +2,6 @@ from typing import Any
 import random
 
 from sympy import diff, Symbol, sympify, Matrix, symbols
-from sympy.matrices.common import NonInvertibleMatrixError
 
 
 class InputNewton:
@@ -82,6 +81,9 @@ class Newton:
             result += abs(value)
 
         return result if minus_count % 2 == 0 else -result
+
+    def get_vector(self) -> Matrix:
+        return self.vector
 
     def calculate(self) -> dict:
         jacobi = self._get_jacobi_matrix()
