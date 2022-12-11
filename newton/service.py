@@ -2,12 +2,32 @@ from typing import Any
 import random
 
 from sympy import diff, Symbol, sympify, Matrix, symbols
+from sympy.matrices.common import NonInvertibleMatrixError
+
+
+class InputNewton:
+    lines: list = []
+
+    def __init__(self, filepath: str = "input.txt"):
+        self.filepath = filepath
+        self._get_lines()
+
+    def _get_lines(self):
+        with open(self.filepath, "r") as file:
+            for line in file:
+                self.lines.append(line.replace("=0\n", ""))
+
+    def get_equations(self):
+        return self.lines[:-1]
+
+    def get_variables(self):
+        return self.lines[-1]
 
 
 class Newton:
     def __init__(self, equations: list[str], variables: str, eps: float, split_str: str = ", "):
         self.eps: float = eps
-        self.vector: Matrix = Matrix([random.uniform(0.1, 20.0) for i in range(len(equations))])
+        self.vector: Matrix = Matrix([random.uniform(0.1, 22.0) for i in range(len(equations))])
         self.variables: list[Symbol] = symbols(list(map(str, variables.split(split_str))))
         self.equations: list[str] = equations
 
@@ -40,7 +60,6 @@ class Newton:
             for j in range(len(matrix[i])):
                 result_i.append(sympify(matrix[i][j], locals=local_vars))
             result.append(result_i)
-
         return result
 
     def _calculate_f_matrix(self) -> Matrix:
@@ -73,14 +92,14 @@ class Newton:
 
         while not x_last or abs(delta) > self.eps:
             x_last = self.vector
-            w = Matrix(self._calculate_matrix(jacobi))
-
-            self.vector -= w.inv() * self._calculate_f_matrix()
-
+            try:
+                w = Matrix(self._calculate_matrix(jacobi))
+                self.vector -= w.inv() * self._calculate_f_matrix()
+            except:
+                return {"detail": "Have no solutions"}
             delta = self._sum_magnitudes(self.vector - x_last)
 
         for i in range(len(self.vector)):
-            result[self.variables[i]] = round(self.vector[i], 6)
+            result[self.variables[i]] = self.vector[i]
 
         return result
-
