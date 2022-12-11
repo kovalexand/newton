@@ -27,10 +27,13 @@ class Newton:
     def __init__(
             self, equations: list[str], variables: str,
             eps: float = 0.01, split_str: str = ", ",
-            first_x: float = 0.1, second_x: float = 22.0
+            vector: list[float] = None
     ):
         self.eps: float = eps
-        self.vector: Matrix = Matrix([random.uniform(first_x, second_x) for i in range(len(equations))])
+        if vector and len(vector) == len(equations):
+            self.vector: Matrix = Matrix(vector)
+        else:
+            self.vector: Matrix = Matrix([random.uniform(0.1, 21.0) for i in range(len(equations))])
         self.variables: list[Symbol] = symbols(list(map(str, variables.split(split_str))))
         self.equations: list[str] = equations
 
